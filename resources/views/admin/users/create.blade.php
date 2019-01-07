@@ -47,10 +47,9 @@
 
     {!! Form::close() !!}
 
-    @endsection
-
-
+    
 @include('includes.form-error')
 
+@endsection
 
 

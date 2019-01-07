@@ -7,9 +7,12 @@ use App\Http\Requests\UserRequest;
 use App\Photo;
 use App\Role;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Session;
 
 use App\Http\Requests;
 use App\User;
+//use mysql_xdevapi\Session;
+
 class AdminUsersController extends Controller
 {
     /**
@@ -36,8 +39,6 @@ class AdminUsersController extends Controller
         $roles= Role::lists('name','id')->all();
         return view('admin.users.create',compact('roles'));
 
-
-
     }
 
     /**
@@ -54,11 +55,11 @@ class AdminUsersController extends Controller
         }
 
         else{
-            $input['password']= bcrypt($request->password);
+//            $input['password']= bcrypt($request->password);
             $input= $request->all();
         }
 
-
+//        $input['password']= bcrypt($request->password);
         $input= $request->all();
 
         if ($file= $request->file('photo_id')){
@@ -154,5 +155,22 @@ class AdminUsersController extends Controller
     public function destroy($id)
     {
         //
+
+//        User::findorFail($id)->delete();
+//        Above Line Deletes the Record of User
+
+//        Below Code Deletes the Photo of a user
+
+        $user= User::findorFail($id)->delete();
+        unlink(public_path(). $user->photo->file);
+
+        $user->delete();
+
+
+
+        Session::flash('deleted_user','The User has been deleted ');
+       return redirect('/admin/users');
+
+
     }
 }
